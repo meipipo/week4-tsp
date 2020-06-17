@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/csv"
 	"fmt"
+	"math"
 	"os"
 	"strconv"
 )
@@ -39,13 +40,14 @@ func read_cities(i string) map[int][]float64 {
 	return cities
 }
 
-func solve(cities map[int][]float64) [][]string {
+// solve do nothing.
+func solve(cities map[int][]float64) ([][]string, float64) {
 	var solution [][]string
 	solution = append(solution, []string{"index"})
 	for k := range cities {
 		solution = append(solution, []string{strconv.Itoa(k)})
 	}
-	return solution
+	return solution, 0
 }
 
 func write_solution(i string, solution [][]string) {
@@ -62,11 +64,37 @@ func write_solution(i string, solution [][]string) {
 	}
 }
 
+func min(lengths map[int]float64) (int, float64) {
+	minLen := 1000000.0 // from previous score
+	minID := -1
+	for k, v := range lengths {
+		if v < minLen {
+			minLen = v
+			minID = k
+		}
+	}
+	return minID, minLen
+}
+
+func dist(x0, y0, x1, y1 float64) float64 {
+	return math.Sqrt(math.Pow((x1-x0), 2) + math.Pow((y1-y0), 2))
+}
+
 func main() {
 	var i string
 	fmt.Scan(&i)
 	cities := read_cities(i)
 
-	solution := solve(cities)
+	var option string
+	fmt.Scan(&option)
+	var solution [][]string
+	var length float64
+	switch option {
+	case "greedy":
+		solution, length = solveGreedy(cities)
+	default:
+		solution, length = solve(cities)
+	}
 	write_solution(i, solution)
+	fmt.Println(length)
 }
