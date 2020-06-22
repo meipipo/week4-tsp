@@ -24,6 +24,12 @@ func getDistance(cities map[int][]float64) map[int]map[int]float64 {
 	dist := make(map[int]map[int]float64)
 	for i := 0; i < len(cities); i++ {
 		for j := i + 1; j < len(cities); j++ {
+			if _, ok := dist[i]; !ok {
+				dist[i] = make(map[int]float64)
+			}
+			if _, ok := dist[j]; !ok {
+				dist[j] = make(map[int]float64)
+			}
 			dist[i][j] = distance(cities[i][0], cities[i][1], cities[j][0], cities[j][1])
 			dist[j][i] = distance(cities[i][0], cities[i][1], cities[j][0], cities[j][1])
 		}
