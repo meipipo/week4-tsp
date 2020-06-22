@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/csv"
 	"fmt"
-	"math"
 	"os"
 	"strconv"
 )
@@ -62,22 +61,6 @@ func write_solution(i string, solution [][]string) {
 	if err := writer.WriteAll(solution); err != nil {
 		panic(err)
 	}
-}
-
-func min(lengths map[int]float64) (int, float64) {
-	minLen := 1000000.0 // from previous score
-	minID := -1
-	for k, v := range lengths {
-		if v < minLen {
-			minLen = v
-			minID = k
-		}
-	}
-	return minID, minLen
-}
-
-func dist(x0, y0, x1, y1 float64) float64 {
-	return math.Sqrt(math.Pow((x1-x0), 2) + math.Pow((y1-y0), 2))
 }
 
 func main() {

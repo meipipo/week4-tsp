@@ -32,7 +32,7 @@ func solveGreedy(cities map[int][]float64) ([][]string, float64) {
 				lengthI += minLen
 				xq := citiesCopied[newID][0]
 				yq := citiesCopied[newID][1]
-				lengthI += dist(x0, y0, xq, yq)
+				lengthI += distance(x0, y0, xq, yq)
 				break
 			}
 			delete(citiesCopied, id)
@@ -57,7 +57,7 @@ func distancesFrom(i int, cities map[int][]float64) map[int]float64 {
 		if k == i {
 			continue
 		}
-		lengths[k] = dist(x, y, v[0], v[1])
+		lengths[k] = distance(x, y, v[0], v[1])
 	}
 	return lengths
 }
