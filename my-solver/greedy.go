@@ -61,8 +61,7 @@ func solveNN(cities map[int][]float64) ([][]string, float64) {
 			unvisited -= 1
 			lengthI += newLen
 		}
-		// Return to the start city.
-		solutionI = append(solutionI, []string{strconv.Itoa(id)})
+		// Add path to go back to the start city.
 		lengthI += distances[id][current]
 
 		// Update if it is optimal.
