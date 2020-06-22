@@ -12,34 +12,60 @@ func copyMapCities(cities map[int][]float64) map[int][]float64 {
 	return citiesCopied
 }
 
-func solveGreedy(cities map[int][]float64) ([][]string, float64) {
-	var solution [][]string
+func copyDistances(distances map[int]map[int]float64) map[int]map[int]float64 {
+	distancesCopied := make(map[int]map[int]float64)
+	for k, v := range distances {
+		for k2, v2 := range v {
+			if _, ok := distancesCopied[k]; !ok {
+				distancesCopied[k] = make(map[int]float64)
+			}
+			distancesCopied[k][k2] = v2
+		}
+	}
+	return distancesCopied
+}
 
+func solveNN(cities map[int][]float64) ([][]string, float64) {
+	distances := getDistance(cities)
+
+	var solution [][]string
 	minLen := 1000000.0
 	for id := 0; id < len(cities); id++ {
 		var solutionI [][]string
 		solutionI = append(solutionI, []string{"index"})
-		lengthI := 0.0
-		citiesCopied := copyMapCities(cities)
-		x0 := citiesCopied[id][0]
-		y0 := citiesCopied[id][1]
-		for {
-			solutionI = append(solutionI, []string{strconv.Itoa(id)})
-			lengths := distancesFrom(id, citiesCopied)
-			newID, minLen := min(lengths)
-			if len(citiesCopied) == 2 {
-				solutionI = append(solutionI, []string{strconv.Itoa(newID)})
-				lengthI += minLen
-				xq := citiesCopied[newID][0]
-				yq := citiesCopied[newID][1]
-				lengthI += distance(x0, y0, xq, yq)
-				break
-			}
-			delete(citiesCopied, id)
-			id = newID
-			lengthI += minLen
-		}
 
+		// Current city. Start with id.
+		current := id
+		solutionI = append(solutionI, []string{strconv.Itoa(current)})
+		lengthI := 0.0
+
+		// Visited or not.
+		visited := make(map[int]bool)
+		for i := 0; i < len(cities); i++ {
+			visited[i] = false
+		}
+		visited[current] = true
+		// Number of unvisited cities.
+		unvisited := len(cities) - 1
+
+		distancesCopied := copyDistances(distances)
+		for unvisited > 0 {
+			newID, newLen := min(distancesCopied[current])
+			if visited[newID] {
+				delete(distancesCopied[current], newID)
+				continue
+			}
+			current = newID
+			solutionI = append(solutionI, []string{strconv.Itoa(current)})
+			visited[current] = true
+			unvisited -= 1
+			lengthI += newLen
+		}
+		// Return to the start city.
+		solutionI = append(solutionI, []string{strconv.Itoa(id)})
+		lengthI += distances[id][current]
+
+		// Update if it is optimal.
 		if lengthI < minLen {
 			minLen = lengthI
 			solution = solutionI
@@ -47,17 +73,4 @@ func solveGreedy(cities map[int][]float64) ([][]string, float64) {
 	}
 
 	return solution, minLen
-}
-
-func distancesFrom(i int, cities map[int][]float64) map[int]float64 {
-	lengths := make(map[int]float64)
-	x := cities[i][0]
-	y := cities[i][1]
-	for k, v := range cities {
-		if k == i {
-			continue
-		}
-		lengths[k] = distance(x, y, v[0], v[1])
-	}
-	return lengths
 }

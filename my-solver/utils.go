@@ -36,3 +36,16 @@ func getDistance(cities map[int][]float64) map[int]map[int]float64 {
 	}
 	return dist
 }
+
+func distancesFrom(i int, cities map[int][]float64) map[int]float64 {
+	lengths := make(map[int]float64)
+	x := cities[i][0]
+	y := cities[i][1]
+	for k, v := range cities {
+		if k == i {
+			continue
+		}
+		lengths[k] = distance(x, y, v[0], v[1])
+	}
+	return lengths
+}

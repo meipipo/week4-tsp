@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/csv"
+	"flag"
 	"fmt"
 	"os"
 	"strconv"
@@ -64,20 +65,25 @@ func write_solution(i string, solution [][]string) {
 }
 
 func main() {
-	var i string
-	fmt.Scan(&i)
-	cities := read_cities(i)
+	var (
+		i      = flag.String("input", "0", "input number 0-6")
+		solver = flag.String("solver", "", "solver name")
+	)
+	flag.Parse()
+	cities := read_cities(*i)
 
-	var option string
-	fmt.Scan(&option)
 	var solution [][]string
 	var length float64
-	switch option {
-	case "greedy":
-		solution, length = solveGreedy(cities)
+	switch *solver {
+	case "nn":
+		solution, length = solveNN(cities)
+	case "dist": // TODO
+		edges := makeEdges(getDistance(cities))
+		sortEdges(edges)
+		return
 	default:
 		solution, length = solve(cities)
 	}
-	write_solution(i, solution)
+	write_solution(*i, solution)
 	fmt.Println(length)
 }
