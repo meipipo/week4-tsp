@@ -17,6 +17,9 @@ func (edges Edges) Len() int {
 }
 
 func (edges Edges) Less(i, j int) bool {
+	if edges[i].weight == edges[j].weight {
+		return edges[i].in < edges[j].in
+	}
 	return edges[i].weight < edges[j].weight
 }
 
@@ -46,6 +49,16 @@ func makeEdges(dist map[int]map[int]float64) Edges {
 func sortEdges(edges Edges) Edges {
 	sort.Sort(edges)
 	return edges
+}
+
+func edgesFrom(edges Edges, i int) Edges {
+	var edgesIn Edges
+	for _, v := range edges {
+		if v.in == i {
+			edgesIn = append(edgesIn, v)
+		}
+	}
+	return edgesIn
 }
 
 type Graph struct {
