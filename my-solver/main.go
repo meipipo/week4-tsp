@@ -50,6 +50,15 @@ func solve(cities map[int][]float64) ([][]string, float64) {
 	return solution, 0
 }
 
+func csvWritable(solutionInt []int) [][]string {
+	var solution [][]string
+	solution = append(solution, []string{"index"})
+	for _, v := range solutionInt {
+		solution = append(solution, []string{strconv.Itoa(v)})
+	}
+	return solution
+}
+
 func write_solution(i string, solution [][]string) {
 	path := "../solution_yours_" + i + ".csv"
 	file, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE, 0755)
@@ -73,17 +82,18 @@ func main() {
 	cities := read_cities(*i)
 
 	var solution [][]string
-	var length float64
 	switch *solver {
 	case "nn":
-		solution, length = solveNN(cities)
+		solutionInt, length := solveNN(cities)
+		fmt.Println(length)
+		solution = csvWritable(solutionInt)
 	case "dist": // TODO
 		edges := makeEdges(getDistance(cities))
 		sortEdges(edges)
 		return
 	default:
-		solution, length = solve(cities)
+		solution, _ = solve(cities)
+		return
 	}
 	write_solution(*i, solution)
-	fmt.Println(length)
 }

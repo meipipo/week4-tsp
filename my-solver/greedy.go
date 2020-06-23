@@ -1,9 +1,5 @@
 package main
 
-import (
-	"strconv"
-)
-
 func copyMapCities(cities map[int][]float64) map[int][]float64 {
 	citiesCopied := make(map[int][]float64)
 	for k, v := range cities {
@@ -25,18 +21,17 @@ func copyDistances(distances map[int]map[int]float64) map[int]map[int]float64 {
 	return distancesCopied
 }
 
-func solveNN(cities map[int][]float64) ([][]string, float64) {
+func solveNN(cities map[int][]float64) ([]int, float64) {
 	distances := getDistance(cities)
 
-	var solution [][]string
+	var solution []int
 	minLen := 1000000.0
 	for id := 0; id < len(cities); id++ {
-		var solutionI [][]string
-		solutionI = append(solutionI, []string{"index"})
+		var solutionI []int
 
 		// Current city. Start with id.
 		current := id
-		solutionI = append(solutionI, []string{strconv.Itoa(current)})
+		solutionI = append(solutionI, current)
 		lengthI := 0.0
 
 		// Visited or not.
@@ -56,7 +51,7 @@ func solveNN(cities map[int][]float64) ([][]string, float64) {
 				continue
 			}
 			current = newID
-			solutionI = append(solutionI, []string{strconv.Itoa(current)})
+			solutionI = append(solutionI, current)
 			visited[current] = true
 			unvisited -= 1
 			lengthI += newLen
