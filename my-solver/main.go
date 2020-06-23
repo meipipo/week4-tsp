@@ -82,11 +82,18 @@ func main() {
 	cities := read_cities(*i)
 
 	var solution [][]string
+	distances := getDistance(cities)
+	n := len(cities)
 	switch *solver {
 	case "nn":
-		solutionInt, length := solveNN(cities)
+		solutionInt, length := solveNN(n, distances)
 		fmt.Println(length)
 		solution = csvWritable(solutionInt)
+	case "2opt":
+		solutionInt, length := solveNN(n, distances)
+		solutionInt, length = twoOpt(n, distances, solutionInt, length)
+		solution = csvWritable(solutionInt)
+		fmt.Println(length)
 	case "dist": // TODO
 		edges := makeEdges(getDistance(cities))
 		sortEdges(edges)

@@ -21,12 +21,10 @@ func copyDistances(distances map[int]map[int]float64) map[int]map[int]float64 {
 	return distancesCopied
 }
 
-func solveNN(cities map[int][]float64) ([]int, float64) {
-	distances := getDistance(cities)
-
+func solveNN(n int, distances map[int]map[int]float64) ([]int, float64) {
 	var solution []int
 	minLen := 1000000.0
-	for id := 0; id < len(cities); id++ {
+	for id := 0; id < n; id++ {
 		var solutionI []int
 
 		// Current city. Start with id.
@@ -36,12 +34,12 @@ func solveNN(cities map[int][]float64) ([]int, float64) {
 
 		// Visited or not.
 		visited := make(map[int]bool)
-		for i := 0; i < len(cities); i++ {
+		for i := 0; i < n; i++ {
 			visited[i] = false
 		}
 		visited[current] = true
 		// Number of unvisited cities.
-		unvisited := len(cities) - 1
+		unvisited := n - 1
 
 		distancesCopied := copyDistances(distances)
 		for unvisited > 0 {
